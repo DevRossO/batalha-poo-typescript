@@ -8,8 +8,7 @@ export class Personagem {
         private _resistencia: number,
         private _vidaAtual: number,
         private _vidaMaxima: number
-    ) { }
-
+    ) {}
 
     public get nome(): string {
         return this._nome;
@@ -43,7 +42,6 @@ export class Personagem {
         return this._vidaMaxima;
     }
 
-    // Setters
     public set nome(nome: string) {
         this._nome = nome;
     }
@@ -67,27 +65,28 @@ export class Personagem {
     public set resistencia(resistencia: number) {
         this._resistencia = resistencia;
     }
-    public set vidaMaxima(vidaMaxima: number) {
-        this._vidaMaxima = vidaMaxima;
-    }
 
     public set vidaAtual(vidaAtual: number) {
         this._vidaAtual = vidaAtual;
     }
 
-    public atacar(inimigo: Personagem): void {
-
-    };
-
-    public contraAtacar(inimigo: Personagem): void {
-
+    public set vidaMaxima(vidaMaxima: number) {
+        this._vidaMaxima = vidaMaxima;
     }
 
-    public aprimorarHabilidadePrincipal(personagem: Personagem): void {
+    public atacar(inimigo: Personagem): string {
+        return "";
+    }
 
-    };
+    public contraAtacar(inimigo: Personagem): string {
+        return "";
+    }
 
-    public regenerarVida(personagem: Personagem): void {
+    public aprimorarHabilidadePrincipal(): string {
+        return "";
+    }
 
+    public regenerarVida(): string {
+        return "";
     }
 }

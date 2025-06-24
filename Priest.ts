@@ -2,8 +2,6 @@ import { Personagem } from "./Personagem";
 import { Util } from "./Util";
 
 export class Priest extends Personagem {
-
-
     constructor(nome: string) {
         super(nome, 0, 0, 0, 0, 0, 0, 0);
         this.nome = nome + " Priest";
@@ -13,29 +11,29 @@ export class Priest extends Personagem {
         this.esquiva = 0;
         this.resistencia = 0;
         this.vidaMaxima = 8000;
-        this.vidaAtual =  Util.randomizar(1, 4000);
+        this.vidaAtual = Util.randomizar(1, 4000);
     }
 
     public atacar(inimigo: Personagem): string {
-        const tentarConverter = Util.randomizar(1, 100)
-        if (tentarConverter > 1 && tentarConverter <= 40) {
-            return `O ${inimigo} foi convertido!`;
+        const tentarConverter = Util.randomizar(1, 100);
+        if (tentarConverter <= 40) {
+            return `${inimigo.nome} foi convertido!`;
         } else {
-            return `O ${inimigo} não foi convertido!`;
+            return `${inimigo.nome} não foi convertido!`;
         }
     }
 
-
-    public contraAtacar(inimigo: Personagem): void {
-        this.atacar(inimigo)
+    public contraAtacar(inimigo: Personagem): string {
+        return this.atacar(inimigo);
     }
 
-    aprimorarHabilidadePrincipal() {
-        console.error('Este Personagem não pode executar esta ação');
+    public aprimorarHabilidadePrincipal(): string {
+        throw new Error("Este personagem não pode executar esta ação");
     }
 
-    public regenerarVida(): void {
-        this.vidaAtual += this.vidaAtual * 1.10;
+    public regenerarVida(): string {
+        const vidaRecuperada = this.vidaAtual * 0.10;
+        this.vidaAtual += vidaRecuperada;
+        return `${this.nome} regenerou 10% da vida e agora tem ${this.vidaAtual.toFixed(1)} de vida.`;
     }
-
 }

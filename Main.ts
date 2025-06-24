@@ -1,18 +1,16 @@
+const prompt = require('prompt-sync')();
 import { Warrior } from './Warrior';
 import { Priest } from './Priest';
 import { Personagem } from './Personagem';
-import { Util } from './Util';
 
-const w1 = new Warrior("Darius")
-const w2 = new Warrior("Kayn")
-const p1 = new Priest("Milio")
-const p2 = new Priest("Neeko")
+const w1 = new Warrior("Ragnar");
+const w2 = new Warrior("Jon Snow");
+const p1 = new Priest("Fabio de Melo");
+const p2 = new Priest("Marcelo Rossi");
 
-const personagens = [w1, w2, p1, p2];
+let personagens: Personagem[] = [w1, w2, p1, p2];
 
-
-
-function escolherDoisAleatorios(personagens: Personagem[]){
+function escolherDoisAleatorios(personagens: Personagem[]): [Personagem, Personagem] {
     let atacante: Personagem;
     let defensor: Personagem;
 
@@ -24,42 +22,56 @@ function escolherDoisAleatorios(personagens: Personagem[]){
     return [atacante, defensor];
 }
 
-function batalhar(personagens: Personagem[]) {
-    let rodadas = 1;
-
-    while (personagens.filter(p => p.vidaAtual > 0).length > 1) {
-        console.log(`\n--- Rodada ${rodadas} ---`);
-        const [atacante, defensor] = escolherDoisAleatorios(personagens);
-
-        console.log(`${atacante.nome} vai atacar ${defensor.nome}`);
-
-        // Executa o ataque e exibe o resultado
-        const resultadoAtaque = atacante.atacar(defensor);
-        console.log(resultadoAtaque);
-
-        // Se o atacante for um Priest, tenta regenerar vida
-        if (atacante instanceof Priest) {
-            atacante.regenerarVida();
-            console.log(`${atacante.nome} regenerou vida e agora tem ${atacante.vidaAtual} de vida.`);
-        }
-
-        // Se o defensor for um Warrior e ainda estiver vivo, realiza um contra-ataque
-        if (defensor instanceof Warrior && defensor.vidaAtual > 0) {
-            const resultadoContraAtaque = defensor.contraAtacar(atacante);
-            console.log(resultadoContraAtaque);
-        }
-
-        console.log(`${defensor.nome} agora tem ${defensor.vidaAtual} de vida.`);
-        rodadas++;
-    }
-
-    // Determina o vencedor
-    const vencedor = personagens.find(p => p.vidaAtual > 0);
-    if (vencedor) {
-        console.log(`\n🏆 Vencedor: ${vencedor.nome} com ${vencedor.vidaAtual} de vida restante!`);
-    } else {
-        console.log("Todos os personagens foram derrotados.");
-    }
+function exibirStatus(personagens: Personagem[]) {
+    console.log("===== Personagens vivos (" + personagens.length + ") =====");
+    personagens.forEach(p => {
+        console.log(`${p.nome}: ${p.vidaAtual.toFixed(1)} / ${p.vidaMaxima.toFixed(1)}`);
+    });
+    console.log("========================================\n");
 }
 
+function batalhar(personagensInput: Personagem[]) {
+    let personagens = [...personagensInput];
+    let rodada = 1;
+
+    while (personagens.length > 1) {
+        prompt("Tecle ENTER para rodar o próximo round");
+        console.log(`\n========== Rodada ${rodada} ==========\n`);
+
+        const [atacante, defensor] = escolherDoisAleatorios(personagens);
+
+        if (atacante instanceof Priest) {
+            console.log(`${atacante.nome} tentou converter ${defensor.nome}`);
+            const resultado = atacante.atacar(defensor);
+            console.log(resultado);
+
+            if (resultado.includes("foi convertido")) {
+                personagens = personagens.filter(p => p !== defensor);
+            }
+
+            const regenMsg = atacante.regenerarVida();
+            console.log(regenMsg);
+        } else {
+            const resultado = atacante.atacar(defensor);
+            console.log(resultado);
+
+            if (defensor.vidaAtual > 0 && defensor instanceof Warrior) {
+                const contra = defensor.contraAtacar(atacante);
+                console.log(`${defensor.nome} contra-atacou ${atacante.nome}`);
+                console.log(contra);
+            }
+
+            if (defensor.vidaAtual <= 0) {
+                console.log(`${defensor.nome} foi derrotado e removido da batalha.`);
+                personagens = personagens.filter(p => p !== defensor);
+            }
+        }
+
+        exibirStatus(personagens);
+        rodada++;
+    }
+
+    const vencedor = personagens[0];
+    console.log(`🏆 O vencedor foi ${vencedor.nome} com ${vencedor.vidaAtual.toFixed(1)} de vida restante!`);
+}
 batalhar(personagens);
