@@ -46,7 +46,7 @@ function escolherDoisAleatorios(personagens: Personagem[]): [Personagem, Persona
 }
 
 function exibirStatus(personagens: Personagem[]) {
-    console.log(`===== Personagens vivos (${personagens.length}) =====`);
+    console.log("===== Personagens vivos (" + personagens.length + ") =====");
     personagens.forEach(p => {
         console.log(`${p.nome}: ${p.vidaAtual.toFixed(1)} / ${p.vidaMaxima.toFixed(1)}`);
     });
@@ -62,7 +62,6 @@ function batalhar(personagensInput: Personagem[]) {
         console.log(`\n========== Rodada ${rodada} ==========\n`);
 
         const [atacante, defensor] = escolherDoisAleatorios(personagens);
-
         personagens.forEach(p => placar[p.nome].rodadasVivo++);
 
         if (atacante instanceof Priest) {
@@ -80,6 +79,7 @@ function batalhar(personagensInput: Personagem[]) {
 
             const regenMsg = atacante.regenerarVida();
             console.log(regenMsg);
+
         } else {
             const resultado = atacante.atacar(defensor);
             console.log(resultado);
@@ -90,6 +90,12 @@ function batalhar(personagensInput: Personagem[]) {
                 console.log(`${defensor.nome} contra-atacou ${atacante.nome}`);
                 console.log(contra);
                 placar[defensor.nome].ataques++;
+
+                if (atacante.vidaAtual <= 0) {
+                    console.log(`${atacante.nome} foi derrotado e removido da batalha. ☠`);
+                    personagens = personagens.filter(p => p !== atacante);
+                    placar[defensor.nome].eliminacoes++;
+                }
             }
 
             if (defensor.vidaAtual <= 0) {
@@ -98,6 +104,8 @@ function batalhar(personagensInput: Personagem[]) {
                 placar[atacante.nome].eliminacoes++;
             }
         }
+
+        personagens = personagens.filter(p => p.vidaAtual > 0);
 
         exibirStatus(personagens);
         rodada++;
