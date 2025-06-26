@@ -14,14 +14,16 @@ export class Priest extends Personagem {
         this.vidaAtual = Util.randomizar(1, 4000);
     }
 
-    public atacar(inimigo: Personagem): string {
-        const tentarConverter = Util.randomizar(1, 100);
-        if (tentarConverter <= 40) {
-            return `${inimigo.nome} foi convertido!`;
-        } else {
-            return `${inimigo.nome} não foi convertido!`;
-        }
+   public atacar(inimigo: Personagem): string {
+    const tentarConverter = Util.randomizar(1, 100);
+    if (tentarConverter <= 40) {
+        inimigo.vidaAtual = 0;
+        return `${inimigo.nome} foi convertido!`;
+    } else {
+        return `${inimigo.nome} não foi convertido!`;
     }
+}
+
 
     public contraAtacar(inimigo: Personagem): string {
         return this.atacar(inimigo);
